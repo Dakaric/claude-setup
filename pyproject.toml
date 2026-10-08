@@ -1,0 +1,14 @@
+[project]
+name = "claude-setup"
+version = "2.0.0"
+description = "Interaktiver Installer für Claude Code und lokale Werkzeuge"
+requires-python = ">=3.12"
+authors = [{name = "Dakaric"}]
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8,<9"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

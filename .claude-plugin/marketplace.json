@@ -1,0 +1,16 @@
+{
+  "name": "claude-setup",
+  "owner": {
+    "name": "Dakaric"
+  },
+  "metadata": {
+    "description": "Claude-Einrichtung für macOS, Linux und Windows."
+  },
+  "plugins": [
+    {
+      "name": "toolkit",
+      "source": "./plugins/toolkit",
+      "description": "Skills und MCP-Server für Webseite, Texte, E-Mails, neue Projekte, Plan-Prüfung und Übergaben."
+    }
+  ]
+}
