@@ -51,15 +51,15 @@ def test_backup_names_copy_with_timestamp(tmp_path):
     first, second = backup(path), backup(path)
     assert first != second
     assert first.name.startswith("settings.json.sicherung-")
-    assert first.read_text() == second.read_text() == "alt"
+    assert first.read_text(encoding="utf-8") == second.read_text(encoding="utf-8") == "alt"
 
 
 def test_backup_directory(tmp_path):
     from installer.fsutil import backup
     folder = tmp_path / "Ordner"
     folder.mkdir()
-    (folder / "Datei").write_text("Inhalt")
-    assert (backup(folder) / "Datei").read_text() == "Inhalt"
+    (folder / "Datei").write_text("Inhalt", encoding="utf-8")
+    assert (backup(folder) / "Datei").read_text(encoding="utf-8") == "Inhalt"
 
 
 @pytest.mark.parametrize("target", ["outside", "root"])
@@ -83,7 +83,7 @@ def test_safe_rmtree_removes_cache_child(tmp_path):
 
     target = tmp_path / "cache" / "download"
     target.mkdir(parents=True)
-    (target / "artifact").write_text("download")
+    (target / "artifact").write_text("download", encoding="utf-8")
     # Eigener Prozess hält lokale Python-Startanpassungen von der Testsperre getrennt.
     real_run(
         [sys.executable, "-c", "from pathlib import Path; import sys; "

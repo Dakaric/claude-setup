@@ -1,3 +1,4 @@
+import ast
 import json
 import re
 import subprocess
@@ -23,11 +24,24 @@ REFERENCE_DELIMITER = r"$|[\s\"'`<>),;\]]"
 def repository_files():
     output = subprocess.run(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
-        cwd=ROOT, check=True, capture_output=True,
-    ).stdout.decode("utf-8")
+        cwd=ROOT, check=True, capture_output=True, encoding="utf-8",
+    ).stdout
     files = [ROOT / name for name in output.split("\0") if name and name != "uv.lock"]
     assert files
     return files
+
+
+def test_text_files_use_explicit_utf8():
+    for folder in ("installer", "tests"):
+        for path in (ROOT / folder).rglob("*.py"):
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+                    continue
+                if node.func.attr not in {"read_text", "write_text"}:
+                    continue
+                encoding = next((keyword.value for keyword in node.keywords if keyword.arg == "encoding"), None)
+                assert isinstance(encoding, ast.Constant) and encoding.value == "utf-8", f"{path}:{node.lineno}"
 
 
 def without_owner_metadata(text, relative):

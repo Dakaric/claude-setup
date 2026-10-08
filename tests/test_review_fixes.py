@@ -28,7 +28,7 @@ def test_private_executable_is_blocked(tmp_path):
 
 
 def test_project_does_not_set_uv_cache():
-    config = tomllib.loads((ROOT / "pyproject.toml").read_text())
+    config = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     assert "cache-dir" not in config.get("tool", {}).get("uv", {})
 
 
@@ -36,7 +36,7 @@ def test_local_uv_configuration_is_ignored():
     from test_guards import repository_files
 
     assert ROOT / "uv.toml" not in repository_files()
-    assert "/uv.toml" in (ROOT / ".gitignore").read_text().splitlines()
+    assert "/uv.toml" in (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
 
 
 def test_github_owner_has_one_definition():

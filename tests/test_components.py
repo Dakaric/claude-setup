@@ -12,8 +12,8 @@ def test_existing_claude_md_is_not_overwritten(ctx):
     path.write_text("Eigene Regeln", encoding="utf-8")
     result = rules.apply(ctx)
     assert result.status == "handarbeit"
-    assert path.read_text() == "Eigene Regeln"
-    assert "Test" in path.with_name("CLAUDE.md.neu").read_text()
+    assert path.read_text(encoding="utf-8") == "Eigene Regeln"
+    assert "Test" in path.with_name("CLAUDE.md.neu").read_text(encoding="utf-8")
     assert rules.is_done(ctx)
 
 
@@ -104,7 +104,7 @@ def test_statusline_download_and_yes_argument(ctx, commands, monkeypatch):
     def download(url, path):
         assert url == "https://github.com/Dakaric/claude-code-statusline/releases/latest/download/install.sh"
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("exit 0")
+        path.write_text("exit 0", encoding="utf-8")
     monkeypatch.setattr(downloads, "download", download)
     result = statusline.apply(ctx)
     assert result.status == "erledigt"
@@ -273,7 +273,7 @@ def test_rtk_hook_preserves_user_hooks_and_excludes_diff(ctx, commands, monkeypa
     from installer.fsutil import read_json, write_json
     config = ctx.home / "RTK/config.toml"
     config.parent.mkdir(parents=True)
-    config.write_text('[hooks]\nexclude_commands = ["git status"]\n\n[other]\nenabled = true\n')
+    config.write_text('[hooks]\nexclude_commands = ["git status"]\n\n[other]\nenabled = true\n', encoding="utf-8")
     def run(cmd, **kwargs):
         commands.append((cmd, kwargs))
         return subprocess.CompletedProcess(cmd, 0, "Config: " + str(config) if cmd[1:] == ["config"] else "", "")
@@ -286,7 +286,7 @@ def test_rtk_hook_preserves_user_hooks_and_excludes_diff(ctx, commands, monkeypa
     assert "Stop" in data["hooks"]
     assert len(data["hooks"]["PreToolUse"]) == 1
     import tomllib
-    parsed = tomllib.loads(config.read_text())
+    parsed = tomllib.loads(config.read_text(encoding="utf-8"))
     assert parsed["hooks"]["exclude_commands"] == ["git status", "git diff"]
     assert parsed["other"]["enabled"] is True
     assert "TOKEN_OPTIMIZER_BASH_COMPRESS" not in data.get("env", {})
@@ -368,7 +368,7 @@ def test_only_rules_do_not_add_external_references(ctx, monkeypatch):
     from installer.cli import main
     monkeypatch.setattr(Path, "home", lambda: ctx.home)
     assert main(["--yes", "--only", "regeln", "--name", "Alex"]) == 0
-    text = (ctx.home / ".claude/CLAUDE.md").read_text()
+    text = (ctx.home / ".claude/CLAUDE.md").read_text(encoding="utf-8")
     assert all(word not in text for word in ("brainstorming", "grill-with-docs", "ctxQ", "Vault"))
 
 
@@ -411,12 +411,12 @@ def test_rtk_unusual_valid_config_is_manual(ctx, commands, monkeypatch):
     config = ctx.home / "rtk.toml"
     config.parent.mkdir(parents=True)
     original = 'hooks = { exclude_commands = [] }\n'
-    config.write_text(original)
+    config.write_text(original, encoding="utf-8")
     monkeypatch.setattr(subprocess, "run", lambda cmd, **kwargs: subprocess.CompletedProcess(cmd, 0, "Config: " + str(config), ""))
     result = rtk.apply(ctx)
     assert result.status == "handarbeit"
     assert "git diff" in result.detail
-    assert config.read_text() == original
+    assert config.read_text(encoding="utf-8") == original
 
 
 def test_statusline_restores_settings_after_corrupt_external_output(ctx, commands, monkeypatch):
@@ -426,7 +426,7 @@ def test_statusline_restores_settings_after_corrupt_external_output(ctx, command
     write_json(path, {"own": "behalten"})
     monkeypatch.setattr("installer.downloads.download", lambda *args: None)
     def external(cmd, **kwargs):
-        path.write_text('{"broken":')
+        path.write_text('{"broken":', encoding="utf-8")
         return subprocess.CompletedProcess(cmd, 0)
     monkeypatch.setattr(subprocess, "run", external)
     with pytest.raises(json.JSONDecodeError):

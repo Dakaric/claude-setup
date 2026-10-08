@@ -33,20 +33,20 @@ def test_skill_names_match_folders():
 
 
 def test_marketplace_points_to_toolkit():
-    data = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
+    data = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
     plugin = ROOT / data["plugins"][0]["source"]
-    metadata = json.loads((plugin / ".claude-plugin/plugin.json").read_text())
+    metadata = json.loads((plugin / ".claude-plugin/plugin.json").read_text(encoding="utf-8"))
     assert data["name"] == "claude-setup"
     assert metadata["name"] == "toolkit"
     assert metadata["version"] == "2.0.0"
-    servers = json.loads((plugin / ".mcp.json").read_text())["mcpServers"]
+    servers = json.loads((plugin / ".mcp.json").read_text(encoding="utf-8"))["mcpServers"]
     assert set(servers) == {"context7", "playwright"}
 
 
 def test_marketplace_and_plugin_use_owner_name():
     owner = "Daka" + "ric"
-    marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
-    plugin = json.loads((ROOT / "plugins/toolkit/.claude-plugin/plugin.json").read_text())
+    marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
+    plugin = json.loads((ROOT / "plugins/toolkit/.claude-plugin/plugin.json").read_text(encoding="utf-8"))
     assert marketplace["owner"] == {"name": owner}
     assert plugin["author"] == {"name": owner}
 
