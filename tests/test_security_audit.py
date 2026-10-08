@@ -100,14 +100,14 @@ def test_symlinked_installation_stays_untouched(ctx, monkeypatch, tmp_path, link
 @pytest.mark.parametrize("name", [f"{PREFIX}/../../boese.md", f"{PREFIX}/C:boese.md", f"{PREFIX}/a\\..\\boese.md"])
 def test_unsafe_archive_paths_are_rejected(ctx, monkeypatch, name):
     fake_download(monkeypatch, {**SKILL_FILES, name: "x"}, digest_of=SKILL_FILES)
-    with pytest.raises(security_audit.UnsafeArchive):
+    with pytest.raises(security_audit.UnsafeArchive, match="Unsicherer Eintrag"):
         security_audit.apply(ctx)
     assert not security_audit.skill_dir(ctx).exists()
 
 
 def test_symlink_in_archive_is_rejected(ctx, monkeypatch):
     fake_download(monkeypatch, SKILL_FILES, symlinks=(f"{PREFIX}/link.md",))
-    with pytest.raises(security_audit.UnsafeArchive):
+    with pytest.raises(security_audit.UnsafeArchive, match="Unsicherer Eintrag"):
         security_audit.apply(ctx)
 
 
