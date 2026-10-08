@@ -38,8 +38,9 @@ Wenn Claude Code schon läuft: Öffne Claude im Repo-Ordner und sage **„Führe
 | `statuszeile` | Kontextanzeige | ja | ja | nein, benötigt bash und jq | ja |
 | `rtk` | Kürzere Terminal-Ausgaben | Homebrew oder Link | vorhandenes RTK, Homebrew oder Link | nein | ja |
 | `claude-desktop` | MCP-Server für die Desktop-App | ja | nein, keine offizielle App | ja, Standard-Konfigurationsordner | nein |
-| `obsidian` | Eigenen Obsidian-Installer starten | ja | ja | ja | nein |
+| `obsidian` | Eigenen Obsidian-Installer starten; ist Obsidian schon installiert, nur den Vault-Pfad übernehmen | ja | ja | ja | nein |
 | `vault-suche` | Eigenen Installer für die Vault-Suche starten | ja | ja | ja | nein |
+| `chatgpt-umzug` | Skill, der Erinnerungen und Projekte aus ChatGPT übernimmt | ja | ja | ja | nein |
 
 „Ja“ bezeichnet die vorgesehene Unterstützung. Die CI prüft die Logik mit ersetzten Downloads und Prozessen auf allen drei Systemen. Eine echte Installation der Fremdprogramme wird dort nicht ausgeführt.
 
@@ -85,6 +86,8 @@ Der RTK-Hook ergänzt `PreToolUse` für Bash. Der Installer fragt RTK selbst nac
 
 Desktop erhält Context7 und mit Vault-Pfad zusätzlich den Filesystem-Server für genau diesen Ordner. Eigene Server bleiben erhalten. Weicht ein bereits vorhandener gleichnamiger Server ab, bleibt seine vollständige Definition erhalten und der Installer meldet Handarbeit; Befehlsargumente werden nicht vermischt. Unter Windows wird `%APPDATA%\Claude` verwendet. Fehlt der Ordner, gibt es einen Hinweis auf die Store-Fassung und die Konfiguration in der App. Danach Desktop neu starten.
 
+Ist Obsidian schon installiert, fragt der Baustein `obsidian` nur nach dem Pfad deines Vaults und startet den Obsidian-Installer nicht. Erkannt wird Obsidian an seiner Vault-Liste im Konfigurationsordner oder am Programm selbst. Bekannte Vaults zeigt der Installer an; gibt es genau einen, ist er die Vorgabe. Der Pfad muss auf einen vorhandenen Ordner zeigen.
+
 Die anderen Repos werden in `~/.cache/claude-setup` abgelegt, unter Windows in `%LOCALAPPDATA%\claude-setup\cache`. Vorhandene Klone werden mit `git pull --ff-only` aktualisiert. Die Unterinstaller übernehmen das Terminal und erhalten bei Bedarf `--yes`. Beachte auch ihre Zusammenfassung, insbesondere Hinweise auf nötige Handarbeit. Die Vault-Suche prüft eine vorhandene Registrierung mit `claude mcp list`. Mit ausdrücklich bekanntem Vault wird der Unterinstaller erneut gestartet, damit er die Zuordnung zu diesem Vault prüfen kann.
 
 Bei einem Fehler läuft der nächste Baustein weiter. Exit-Code 0 bedeutet: keine technischen Fehler; Handarbeit kann noch offen sein. Exit 1 meldet mindestens einen fehlgeschlagenen Baustein, Exit 2 einen ungültigen Aufruf. Bei GitHub-Rate-Limits kannst du später erneut starten oder `GITHUB_TOKEN` setzen. Der Installer gibt diesen Token nicht aus.
@@ -108,11 +111,15 @@ Der Installer lädt Fremdcode während der Einrichtung. Die jeweiligen Lizenzen 
 | Obsidian-Setup | [obsidian-setup](https://github.com/Dakaric/obsidian-setup) | separater Einrichtungsassistent |
 | Vault-Suche | [vault-search-mcp](https://github.com/Dakaric/vault-search-mcp) | separater MCP-Server mit Installer |
 
+## Umzug von ChatGPT
+
+Wer bisher mit ChatGPT gearbeitet hat, wählt den Baustein `chatgpt-umzug`. Er kopiert den Skill nach `~/.claude/skills/chatgpt-umzug`. Danach in Claude sagen: „Hol meine Daten aus ChatGPT“. Claude gibt einen Prompt aus, den du in ChatGPT einfügst. ChatGPT antwortet mit Erinnerungen, eigenen Anweisungen, Projekten und Vorlieben in fester Gliederung. Diese Antwort fügst du bei Claude ein. Claude schlägt vor, wohin die Inhalte gehören, mit Vault in die passenden Notizen, ohne Vault nach `~/.claude/aus-chatgpt.md`, und schreibt erst nach deiner Zustimmung. Zugangsdaten werden nie übernommen.
+
 ## Skills in Claude Desktop
 
 Das Toolkit enthält `email-entwurf`, `github-aufgaben`, `obsidian-notiz`, `projekt-start`, `social-media-post`, `website-aenderung`, `website-texte-seo`, `handoff-pause` und `vermenschlichen`.
 
-Für den manuellen Upload packst du den gewünschten Ordner aus `plugins/toolkit/skills/` als ZIP. Das Archiv enthält den Skill-Ordner mit seiner `SKILL.md` und allen Begleitdateien. Bei `projekt-start` gehört `vorlage-CLAUDE.md` dazu. Öffne die Skills-Verwaltung in Claude Desktop und lade das ZIP als eigenen Skill hoch, sofern dein Konto diese Funktion anbietet. Das Repo liefert keine fertigen ZIP-Dateien. Ein Skill-Upload richtet keine MCP-Server ein.
+Für den manuellen Upload packst du den gewünschten Ordner aus `plugins/toolkit/skills/` als ZIP. Das Archiv enthält den Skill-Ordner mit seiner `SKILL.md` und allen Begleitdateien. Bei `projekt-start` gehört `vorlage-CLAUDE.md` dazu. Öffne die Skills-Verwaltung in Claude Desktop und lade das ZIP als eigenen Skill hoch, sofern dein Konto diese Funktion anbietet. Der Skill `chatgpt-umzug` liegt unter `skills/chatgpt-umzug/` und lässt sich genauso hochladen, zusammen mit `prompt-fuer-chatgpt.md`. Das Repo liefert keine fertigen ZIP-Dateien. Ein Skill-Upload richtet keine MCP-Server ein.
 
 ## Entwicklung und Tests
 
