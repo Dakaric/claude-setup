@@ -7,15 +7,20 @@ from pathlib import Path
 Json = dict | list
 
 
-def backup(path: Path) -> Path | None:
-    if not path.exists():
-        return None
+def backup_path(path: Path) -> Path:
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     target = path.with_name(f"{path.name}.sicherung-{stamp}")
     counter = 1
     while target.exists():
         target = path.with_name(f"{path.name}.sicherung-{stamp}-{counter}")
         counter += 1
+    return target
+
+
+def backup(path: Path) -> Path | None:
+    if not path.exists():
+        return None
+    target = backup_path(path)
     if path.is_dir():
         shutil.copytree(path, target, symlinks=True)
     else:

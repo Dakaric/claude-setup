@@ -34,6 +34,7 @@ Wenn Claude Code schon läuft: Öffne Claude im Repo-Ordner und sage **„Führe
 | `einstellungen` | Berechtigungen und einstündiger Prompt-Cache | ja | ja | ja | ja |
 | `toolkit` | Neun Skills, Context7, Playwright | ja | ja | ja | ja |
 | `plugins-extern` | Drei weitere Plugins, einzeln wählbar | ja | ja | ja | ja |
+| `security-audit` | Skill für Sicherheitsprüfungen von Cloudflare, fester Stand | ja | ja | ja | ja |
 | `statuszeile` | Kontextanzeige | ja | ja | nein, benötigt bash und jq | ja |
 | `rtk` | Kürzere Terminal-Ausgaben | Homebrew oder Link | vorhandenes RTK, Homebrew oder Link | nein | ja |
 | `claude-desktop` | MCP-Server für die Desktop-App | ja | nein, keine offizielle App | ja, Standard-Konfigurationsordner | nein |

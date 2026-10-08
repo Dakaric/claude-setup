@@ -34,6 +34,9 @@ def render(ctx: Context) -> str:
         extras.append("Kläre größere Vorhaben mit dem Skill brainstorming und schreibe dann einen Plan.")
     if ctx.values.get("plugin:mattpocock-skills@mattpocock") == "1":
         extras.append("Prüfe größere Pläne mit dem Skill grill-with-docs vor der Umsetzung.")
+    if ctx.values.get("selected:security-audit") == "1":
+        extras.append("Prüfe Änderungen an Anmeldung, Rechten, Zugangsdaten oder Eingaben von außen vor dem Abschluss "
+                      "mit dem Skill security-audit. Den vollständigen Audit nur auf ausdrückliche Bitte, er startet viele Agents.")
     if ctx.values.get("selected:statuszeile") == "1":
         extras.append("Zeigt ctxQ unter 90, biete nach dem nächsten abgeschlossenen Schritt eine Übergabe und /clear an.")
     return content + "".join(f"- {line}\n" for line in extras)
