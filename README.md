@@ -102,6 +102,7 @@ Der Installer lädt Fremdcode während der Einrichtung. Die jeweiligen Lizenzen 
 | Context7 | [upstash/context7](https://github.com/upstash/context7) | Dokumentation über MCP |
 | Playwright | [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp) | Browser über MCP |
 | Filesystem | [modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) | Dateizugriff für Desktop |
+| Security-Audit-Skill | [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill) | MIT, fester Stand mit Prüfsumme |
 | Statuszeile | [claude-code-statusline](https://github.com/Dakaric/claude-code-statusline) | Kontextanzeige |
 | RTK | [rtk-ai/rtk](https://github.com/rtk-ai/rtk) | kürzt Terminal-Ausgaben |
 | Obsidian-Setup | [obsidian-setup](https://github.com/Dakaric/obsidian-setup) | separater Einrichtungsassistent |
