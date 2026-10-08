@@ -1,9 +1,10 @@
 import argparse
+import json
 import sys
 from pathlib import Path
 
 from . import platform, ui
-from .components import COMPONENTS
+from .components import COMPONENTS, obsidian
 from .model import Context
 from .paths import absolute_vault_path
 from .run import run_components
@@ -18,6 +19,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--anrede", choices=("du", "sie"), help="Anrede, Standard: du")
     result.add_argument("--language", "--sprache", dest="language", help="Antwortsprache, Standard: Deutsch")
     result.add_argument("--vault", help="Absoluter Pfad zum Obsidian-Vault")
+    result.add_argument("--obsidian-status", action="store_true",
+                        help="Als JSON ausgeben, ob Obsidian installiert ist und welche Vaults es kennt")
     return result
 
 
@@ -25,6 +28,9 @@ def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     args = parser().parse_args(argv)
+    if args.obsidian_status:
+        print_obsidian_status()
+        return 0
     if not sys.stdin.isatty() and not args.yes:
         print("Ohne Terminal bitte --yes und bei Bedarf --only verwenden.")
         return 2
@@ -45,3 +51,9 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     ui.print_summary(results)
     return 1 if any(result.status == "fehler" for result in results) else 0
+
+
+def print_obsidian_status() -> None:
+    ctx = Context(platform.detect(), Path.home(), True, True, {})
+    vaults = [path for path in obsidian.known_vaults(ctx) if Path(path).is_dir()]
+    print(json.dumps({"installiert": obsidian.is_installed(ctx), "vaults": vaults}, ensure_ascii=False))

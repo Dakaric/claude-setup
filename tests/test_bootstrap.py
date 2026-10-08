@@ -117,7 +117,7 @@ def test_relative_vault_exits_two(tmp_path):
 
 def test_windows_documented_command_preserves_git_bash_arguments():
     text = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
-    command = next(part for part in text.split("`") if part.startswith("powershell "))
+    command = next(part for part in text.split("`") if part.startswith("powershell ") and "--only" in part)
     arguments = shlex.split(command)
     assert arguments[arguments.index("-File") + 1] == "./install.ps1"
     assert arguments[arguments.index("--only") + 1] == "regeln,einstellungen"

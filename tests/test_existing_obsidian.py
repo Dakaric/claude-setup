@@ -81,3 +81,16 @@ def test_app_without_vault_list_counts_as_installed(ctx, obsidian, monkeypatch):
     assert obsidian.is_installed(ctx)
     app.rmdir()
     assert not obsidian.is_installed(ctx)
+
+
+def test_status_lists_only_existing_vaults(ctx, obsidian, monkeypatch, capsys):
+    from installer import cli
+    vault = ctx.home / "Mein Vault"
+    vault.mkdir(parents=True)
+    write_vault_list(ctx, vault, ctx.home / "Gelöscht")
+    monkeypatch.setattr(cli.Path, "home", lambda: ctx.home)
+    monkeypatch.setattr(cli.platform, "detect", lambda: "macos")
+    monkeypatch.setattr(cli.sys.stdin, "isatty", lambda: False)
+    assert cli.main(["--obsidian-status"]) == 0
+    status = json.loads(capsys.readouterr().out)
+    assert status == {"installiert": True, "vaults": [str(vault)]}

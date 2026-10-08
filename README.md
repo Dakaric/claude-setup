@@ -22,7 +22,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 
 Die Starthilfe installiert [uv](https://docs.astral.sh/uv/), wenn es fehlt. uv stellt Python 3.12 bereit. Unter Windows ergänzt die Starthilfe den PATH für die laufende Sitzung. Programme, die winget installiert, sind unter Umständen erst in einem neuen Terminal verfügbar.
 
-Wenn Claude Code schon läuft: Öffne Claude im Repo-Ordner und sage **„Führe die Einrichtung aus“**. Die CLAUDE.md erklärt Claude, welche Angaben nötig sind und wie es die gewählten Bausteine ohne Terminaldialog startet.
+Empfohlen, sobald Claude Code läuft: Öffne Claude im Repo-Ordner und sage **„Führe die Einrichtung aus“**. Claude fragt nach deiner Auswahl und erledigt den Rest. Den Pfad deines Obsidian-Vaults liest Claude selbst aus der Vault-Liste von Obsidian, du musst ihn nicht eintippen. Die CLAUDE.md im Repo beschreibt Claude den Ablauf.
 
 ## Bausteine
 
@@ -86,7 +86,7 @@ Der RTK-Hook ergänzt `PreToolUse` für Bash. Der Installer fragt RTK selbst nac
 
 Desktop erhält Context7 und mit Vault-Pfad zusätzlich den Filesystem-Server für genau diesen Ordner. Eigene Server bleiben erhalten. Weicht ein bereits vorhandener gleichnamiger Server ab, bleibt seine vollständige Definition erhalten und der Installer meldet Handarbeit; Befehlsargumente werden nicht vermischt. Unter Windows wird `%APPDATA%\Claude` verwendet. Fehlt der Ordner, gibt es einen Hinweis auf die Store-Fassung und die Konfiguration in der App. Danach Desktop neu starten.
 
-Ist Obsidian schon installiert, fragt der Baustein `obsidian` nur nach dem Pfad deines Vaults und startet den Obsidian-Installer nicht. Erkannt wird Obsidian an seiner Vault-Liste im Konfigurationsordner oder am Programm selbst. Bekannte Vaults zeigt der Installer an; gibt es genau einen, ist er die Vorgabe. Der Pfad muss auf einen vorhandenen Ordner zeigen.
+`--obsidian-status` gibt als JSON aus, ob Obsidian installiert ist und welche vorhandenen Vaults es kennt. Ist Obsidian schon installiert, fragt der Baustein `obsidian` nur nach dem Pfad deines Vaults und startet den Obsidian-Installer nicht. Erkannt wird Obsidian an seiner Vault-Liste im Konfigurationsordner oder am Programm selbst. Bekannte Vaults zeigt der Installer an; gibt es genau einen, ist er die Vorgabe. Der Pfad muss auf einen vorhandenen Ordner zeigen.
 
 Die anderen Repos werden in `~/.cache/claude-setup` abgelegt, unter Windows in `%LOCALAPPDATA%\claude-setup\cache`. Vorhandene Klone werden mit `git pull --ff-only` aktualisiert. Die Unterinstaller übernehmen das Terminal und erhalten bei Bedarf `--yes`. Beachte auch ihre Zusammenfassung, insbesondere Hinweise auf nötige Handarbeit. Die Vault-Suche prüft eine vorhandene Registrierung mit `claude mcp list`. Mit ausdrücklich bekanntem Vault wird der Unterinstaller erneut gestartet, damit er die Zuordnung zu diesem Vault prüfen kann.
 
